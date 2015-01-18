@@ -193,7 +193,7 @@ func (r *DigitalRain) maxRows() int {
 	return int((r.height / cellSize) + 2)
 }
 func (r *DigitalRain) drawGlyphAt(nidx int, col int, row float64, brightness float64, head bool) {
-	if col < 0 || col > r.screenCols || row < 0 || row > float64(r.maxRows()) {
+	if col < 0 || col > r.screenCols || row < -1 || row > float64(r.maxRows()) {
 		return
 	}
 	r.drawGlyphElAt(r.lowGlyphCanvas, nidx, col, row, brightness)
@@ -295,7 +295,8 @@ func (r *DigitalRain) loop(timestamp time.Duration) {
 				glyph = rand.Int() % glyphsCount
 				drop.glyphs[i] = glyph
 			}
-			r.drawGlyphAt(glyph, drop.col, drop.row-float64(i), brightness*gbrightness, i == 0)
+			row := drop.row - float64(i)
+			r.drawGlyphAt(glyph, drop.col, row, brightness*gbrightness, i == 0)
 		}
 	}
 	r.drops = drops
