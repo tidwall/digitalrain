@@ -13,7 +13,7 @@ Build
 Install [Go](http://golang.org/) and [GopherJS](http://github.com/gopherjs/gopherjs)
 
     go get github.com/gopherjs/gopherjs/js
-    gopher build digitalrain.go
+    gopherjs build digitalrain.go
 
 
 License
