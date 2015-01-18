@@ -14,7 +14,7 @@ func main() {
 	sheet.Set("innerHTML",
 		"html, body { background: black; padding:0; margin:0; border:0; width:100%; height:100%; overflow:hidden;}")
 	js.Global.Get("document").Get("head").Call("appendChild", sheet)
-	js.Global.Get("document").Set("title", "Whoa")
+	js.Global.Get("document").Set("title", "whoa")
 	js.Global.Call("addEventListener", "load", func() {
 		rain1, err := NewDigitalRain(js.Global.Get("document").Get("body"), 60, 2, 8, 0.25)
 		if err != nil {
