@@ -144,7 +144,7 @@ func (r *DigitalRain) layout() {
 }
 
 func (r *DigitalRain) overLink(x int, y int) bool {
-	return x > int(r.width/r.ratio)-300 && y > int(r.height/r.ratio)-50 && y < int(r.height/r.ratio)-30
+	return x > int(r.width/r.ratio)-320 && y > int(r.height/r.ratio)-50
 }
 
 type waterDrop struct {
@@ -240,13 +240,13 @@ func (r *DigitalRain) drawTitles() {
 	color := "59,128,109"
 	//color := "123,181,200"
 	y := float64(0)
-	y = r.drawTitle("HTML5 + Canvas, Written in Go", "rgba("+color+",.5)", 15*r.ratio, y)
+	//y = r.drawTitle("HTML5 + Canvas, Written in Go", "rgba("+color+",.5)", 15*r.ratio, y)
 	if r.linkover {
 		y = r.drawTitle("github.com/tidwall/digitalrain", "rgba("+color+",1)", 15*r.ratio, y)
 	} else {
 		y = r.drawTitle("github.com/tidwall/digitalrain", "rgba("+color+",.5)", 15*r.ratio, y)
 	}
-	y = r.drawTitle("Digital Rain", "rgba("+color+",.7)", 20*r.ratio, y)
+	//y = r.drawTitle("Digital Rain", "rgba("+color+",.7)", 20*r.ratio, y)
 
 }
 
