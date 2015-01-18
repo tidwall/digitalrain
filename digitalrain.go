@@ -16,7 +16,6 @@ func main() {
 	js.Global.Get("document").Get("head").Call("appendChild", sheet)
 	js.Global.Get("document").Set("title", "Whoa")
 	js.Global.Call("addEventListener", "load", func() {
-
 		rain1, err := NewDigitalRain(js.Global.Get("document").Get("body"), 60, 2, 8, 0.25)
 		if err != nil {
 			log.Println(err.Error())
@@ -260,9 +259,6 @@ func (r *DigitalRain) loop(timestamp time.Duration) {
 	r.timestamp = timestamp
 
 	r.dropRandomWaterDrop(timestamp)
-
-	//r.ctx.Set("fillStyle", "black")
-	//r.ctx.Call("fillRect", 0, 0, r.width, r.height)
 	r.ctx.Call("clearRect", 0, 0, r.width, r.height)
 	defer r.drawTitles()
 
