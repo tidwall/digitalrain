@@ -61,8 +61,8 @@ type DigitalRain struct {
 	width, height   float64
 	ratio           float64
 	timestamp       Duration
-	highGlyphCanvas *js.Object
-	lowGlyphCanvas  *js.Object
+	highGlyphCanvas *GlyphCanvas
+	lowGlyphCanvas  *GlyphCanvas
 	drops           []*waterDrop
 	linkover        bool
 	screenCols      int
@@ -127,10 +127,10 @@ func (r *DigitalRain) layout() {
 	r.canvas.Get("style").Set("position", "absolute")
 	r.parent.Call("appendChild", r.canvas)
 	if r.highGlyphCanvas == nil {
-		r.highGlyphCanvas = generateGlyphCanvas(highColor)
+		r.highGlyphCanvas = NewGlyphCanvas(highColor)
 	}
 	if r.lowGlyphCanvas == nil {
-		r.lowGlyphCanvas = generateGlyphCanvas(lowColor)
+		r.lowGlyphCanvas = NewGlyphCanvas(lowColor)
 	}
 
 	r.canvas.Call("addEventListener", "click", func(ev *js.Object) {
@@ -210,7 +210,7 @@ func (r *DigitalRain) drawGlyphAt(nidx int, col int, row float64, brightness flo
 		r.drawGlyphElAt(r.highGlyphCanvas, nidx, col, row, brightness)
 	}
 }
-func (r *DigitalRain) drawGlyphElAt(glyphCanvas *js.Object, nidx int, col int, row float64, brightness float64) {
+func (r *DigitalRain) drawGlyphElAt(glyphCanvas *GlyphCanvas, nidx int, col int, row float64, brightness float64) {
 	if brightness <= 0.05 {
 		return
 	}
@@ -222,10 +222,13 @@ func (r *DigitalRain) drawGlyphElAt(glyphCanvas *js.Object, nidx int, col int, r
 	gx := int(nidx%glyphsCols) * glyphCellSize
 	cx := cellSize*float64(col) + cellSize/2 - (cellSize*1.5)/2
 	cy := cellSize * float64(row)
-	r.ctx.Call("save")
-	r.ctx.Set("globalAlpha", brightness)
-	r.ctx.Call("drawImage", glyphCanvas, gx, gy, glyphCellSize, glyphCellSize, cx, cy, cellSize*1.5, cellSize*1.5)
-	r.ctx.Call("restore")
+	glyph := glyphCanvas.Glyph(gx, gy)
+	if glyph != nil {
+		r.ctx.Call("save")
+		r.ctx.Set("globalAlpha", brightness)
+		r.ctx.Call("drawImage", glyph, cx, cy, cellSize*1.5, cellSize*1.5)
+		r.ctx.Call("restore")
+	}
 }
 
 func (r *DigitalRain) drawTitle(text string, color string, fontSize float64, y float64) float64 {
@@ -247,16 +250,12 @@ func (r *DigitalRain) drawTitle(text string, color string, fontSize float64, y f
 
 func (r *DigitalRain) drawTitles() {
 	color := "59,128,109"
-	//color := "123,181,200"
 	y := float64(0)
-	//y = r.drawTitle("HTML5 + Canvas, Written in Go", "rgba("+color+",.5)", 15*r.ratio, y)
 	if r.linkover {
 		y = r.drawTitle("github.com/tidwall/digitalrain", "rgba("+color+",1)", 15*r.ratio, y)
 	} else {
 		y = r.drawTitle("github.com/tidwall/digitalrain", "rgba("+color+",.5)", 15*r.ratio, y)
 	}
-	//y = r.drawTitle("Digital Rain", "rgba("+color+",.7)", 20*r.ratio, y)
-
 }
 
 func (r *DigitalRain) loop(timestamp Duration) {
@@ -321,11 +320,13 @@ const (
 	glyphFontSize = 86
 )
 
-func generateGlyphCanvas(color string) *js.Object {
-	glyphCanvas := js.Global.Get("document").Call("createElement", "canvas")
-	glyphCanvas.Set("width", int(glyphCellSize*glyphsCols+glyphCellSize))
-	glyphCanvas.Set("height", int(glyphCellSize*glyphsCount/glyphsCols+glyphCellSize))
-	ctx := glyphCanvas.Call("getContext", "2d")
+func NewGlyphCanvas(color string) *GlyphCanvas {
+	glyphCanvas := &GlyphCanvas{
+		jso: js.Global.Get("document").Call("createElement", "canvas"),
+	}
+	glyphCanvas.jso.Set("width", int(glyphCellSize*glyphsCols+glyphCellSize))
+	glyphCanvas.jso.Set("height", int(glyphCellSize*glyphsCount/glyphsCols+glyphCellSize))
+	ctx := glyphCanvas.jso.Call("getContext", "2d")
 	col := 0
 	row := 1
 	for i, c := range glyphs {
@@ -359,5 +360,32 @@ func generateGlyphCanvas(color string) *js.Object {
 		ctx.Call("restore")
 		col++
 	}
+
 	return glyphCanvas
+}
+
+type GlyphCanvas struct {
+	jso    *js.Object
+	glyphs map[int]map[int]*js.Object
+}
+
+func (gc *GlyphCanvas) Glyph(gx int, gy int) *js.Object {
+	if gc.glyphs == nil {
+		gc.glyphs = make(map[int]map[int]*js.Object)
+	}
+	mx := gc.glyphs[gx]
+	if mx == nil {
+		mx = make(map[int]*js.Object)
+		gc.glyphs[gx] = mx
+	}
+	my := mx[gy]
+	if my == nil {
+		my = js.Global.Get("document").Call("createElement", "canvas")
+		my.Set("width", glyphCellSize)
+		my.Set("height", glyphCellSize)
+		ctx := my.Call("getContext", "2d")
+		ctx.Call("drawImage", gc.jso, gx, gy, glyphCellSize, glyphCellSize, 0, 0, glyphCellSize, glyphCellSize)
+		mx[gy] = my
+	}
+	return my
 }

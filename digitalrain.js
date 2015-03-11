@@ -2200,7 +2200,7 @@ $packages["runtime"] = (function() {
 	return $pkg;
 })();
 $packages["main"] = (function() {
-	var $pkg = {}, $ptr = {}, js, Duration, DigitalRain, waterDrop, funcType, ptrType, sliceType, ptrType$1, sliceType$1, ptrType$2, funcType$1, sliceType$2, main, itoa, ftoa, randi, NewDigitalRain, generateGlyphCanvas;
+	var $pkg = {}, $ptr = {}, js, Duration, DigitalRain, waterDrop, GlyphCanvas, funcType, ptrType, ptrType$1, sliceType, ptrType$2, sliceType$1, ptrType$3, funcType$1, sliceType$2, mapType, mapType$1, main, itoa, ftoa, randi, NewDigitalRain, NewGlyphCanvas;
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	Duration = $pkg.Duration = $newType(8, $kindFloat64, "main.Duration", "Duration", "main", null);
 	DigitalRain = $pkg.DigitalRain = $newType(0, $kindStruct, "main.DigitalRain", "DigitalRain", "main", function(parent_, canvas_, ctx_, width_, height_, ratio_, timestamp_, highGlyphCanvas_, lowGlyphCanvas_, drops_, linkover_, screenCols_, minSpeed_, maxSpeed_, brightness_) {
@@ -2212,8 +2212,8 @@ $packages["main"] = (function() {
 		this.height = height_ !== undefined ? height_ : 0;
 		this.ratio = ratio_ !== undefined ? ratio_ : 0;
 		this.timestamp = timestamp_ !== undefined ? timestamp_ : 0;
-		this.highGlyphCanvas = highGlyphCanvas_ !== undefined ? highGlyphCanvas_ : null;
-		this.lowGlyphCanvas = lowGlyphCanvas_ !== undefined ? lowGlyphCanvas_ : null;
+		this.highGlyphCanvas = highGlyphCanvas_ !== undefined ? highGlyphCanvas_ : ptrType.nil;
+		this.lowGlyphCanvas = lowGlyphCanvas_ !== undefined ? lowGlyphCanvas_ : ptrType.nil;
 		this.drops = drops_ !== undefined ? drops_ : sliceType.nil;
 		this.linkover = linkover_ !== undefined ? linkover_ : false;
 		this.screenCols = screenCols_ !== undefined ? screenCols_ : 0;
@@ -2231,14 +2231,22 @@ $packages["main"] = (function() {
 		this.spedup = spedup_ !== undefined ? spedup_ : false;
 		this.created = created_ !== undefined ? created_ : 0;
 	});
+	GlyphCanvas = $pkg.GlyphCanvas = $newType(0, $kindStruct, "main.GlyphCanvas", "GlyphCanvas", "main", function(jso_, glyphs_) {
+		this.$val = this;
+		this.jso = jso_ !== undefined ? jso_ : null;
+		this.glyphs = glyphs_ !== undefined ? glyphs_ : false;
+	});
 	funcType = $funcType([], [], false);
-	ptrType = $ptrType(waterDrop);
-	sliceType = $sliceType(ptrType);
-	ptrType$1 = $ptrType(DigitalRain);
+	ptrType = $ptrType(GlyphCanvas);
+	ptrType$1 = $ptrType(waterDrop);
+	sliceType = $sliceType(ptrType$1);
+	ptrType$2 = $ptrType(DigitalRain);
 	sliceType$1 = $sliceType($String);
-	ptrType$2 = $ptrType(js.Object);
-	funcType$1 = $funcType([ptrType$2], [], false);
+	ptrType$3 = $ptrType(js.Object);
+	funcType$1 = $funcType([ptrType$3], [], false);
 	sliceType$2 = $sliceType($Int);
+	mapType = $mapType($Int, ptrType$3);
+	mapType$1 = $mapType($Int, mapType);
 	main = function() {
 		var $ptr = {}, sheet;
 		sheet = $global.document.createElement($externalize("style", $String));
@@ -2289,14 +2297,14 @@ $packages["main"] = (function() {
 	};
 	NewDigitalRain = $pkg.NewDigitalRain = function(parent, screenCols, minSpeed, maxSpeed, brightness) {
 		var $ptr = {}, brightness, err, maxSpeed, minSpeed, parent, rain, screenCols;
-		rain = new DigitalRain.ptr(parent, null, null, 0, 0, 0, 0, null, null, sliceType.nil, false, 0, 0, 0, 0);
+		rain = new DigitalRain.ptr(parent, null, null, 0, 0, 0, 0, ptrType.nil, ptrType.nil, sliceType.nil, false, 0, 0, 0, 0);
 		rain.screenCols = screenCols;
 		rain.minSpeed = minSpeed;
 		rain.maxSpeed = maxSpeed;
 		rain.brightness = brightness;
 		err = rain.start();
 		if (!($interfaceIsEqual(err, $ifaceNil))) {
-			return [ptrType$1.nil, err];
+			return [ptrType$2.nil, err];
 		}
 		return [rain, $ifaceNil];
 	};
@@ -2356,11 +2364,11 @@ $packages["main"] = (function() {
 		r.canvas.style.height = $externalize(ftoa(r.height / r.ratio) + "px", $String);
 		r.canvas.style.position = $externalize("absolute", $String);
 		r.parent.appendChild(r.canvas);
-		if (r.highGlyphCanvas === null) {
-			r.highGlyphCanvas = generateGlyphCanvas("#7bB5C8");
+		if (r.highGlyphCanvas === ptrType.nil) {
+			r.highGlyphCanvas = NewGlyphCanvas("#7bB5C8");
 		}
-		if (r.lowGlyphCanvas === null) {
-			r.lowGlyphCanvas = generateGlyphCanvas("#3b806d");
+		if (r.lowGlyphCanvas === ptrType.nil) {
+			r.lowGlyphCanvas = NewGlyphCanvas("#3b806d");
 		}
 		r.canvas.addEventListener($externalize("click", $String), $externalize((function(ev) {
 			var $ptr = {}, ev;
@@ -2450,7 +2458,7 @@ $packages["main"] = (function() {
 	};
 	DigitalRain.prototype.drawGlyphAt = function(nidx, col, row, brightness, head) { return this.$val.drawGlyphAt(nidx, col, row, brightness, head); };
 	DigitalRain.ptr.prototype.drawGlyphElAt = function(glyphCanvas, nidx, col, row, brightness) {
-		var $ptr = {}, _q, _r, brightness, cellSize, col, cx, cy, glyphCanvas, gx, gy, nidx, r, row;
+		var $ptr = {}, _q, _r, brightness, cellSize, col, cx, cy, glyph, glyphCanvas, gx, gy, nidx, r, row;
 		r = this;
 		if (brightness <= 0.05) {
 			return;
@@ -2463,10 +2471,13 @@ $packages["main"] = (function() {
 		gx = (_r = nidx % 18, _r === _r ? _r : $throwRuntimeError("integer divide by zero")) * 100 >> 0;
 		cx = cellSize * col + cellSize / 2 - (cellSize * 1.5) / 2;
 		cy = cellSize * row;
-		r.ctx.save();
-		r.ctx.globalAlpha = brightness;
-		r.ctx.drawImage(glyphCanvas, gx, gy, 100, 100, cx, cy, cellSize * 1.5, cellSize * 1.5);
-		r.ctx.restore();
+		glyph = glyphCanvas.Glyph(gx, gy);
+		if (!(glyph === null)) {
+			r.ctx.save();
+			r.ctx.globalAlpha = brightness;
+			r.ctx.drawImage(glyph, cx, cy, cellSize * 1.5, cellSize * 1.5);
+			r.ctx.restore();
+		}
 	};
 	DigitalRain.prototype.drawGlyphElAt = function(glyphCanvas, nidx, col, row, brightness) { return this.$val.drawGlyphElAt(glyphCanvas, nidx, col, row, brightness); };
 	DigitalRain.ptr.prototype.drawTitle = function(text, color, fontSize, y) {
@@ -2562,12 +2573,12 @@ $packages["main"] = (function() {
 		/* */ } catch(err) { $err = err; } finally { $deferFrames.pop(); $callDeferred($deferred, $err); }
 	};
 	DigitalRain.prototype.loop = function(timestamp) { return this.$val.loop(timestamp); };
-	generateGlyphCanvas = function(color) {
+	NewGlyphCanvas = $pkg.NewGlyphCanvas = function(color) {
 		var $ptr = {}, _i, _ref, _ref$1, _rune, c, cellSize, col, color, ctx, fontSize, glyphCanvas, i, i$1, row;
-		glyphCanvas = $global.document.createElement($externalize("canvas", $String));
-		glyphCanvas.width = 1900;
-		glyphCanvas.height = 500;
-		ctx = glyphCanvas.getContext($externalize("2d", $String));
+		glyphCanvas = new GlyphCanvas.ptr($global.document.createElement($externalize("canvas", $String)), false);
+		glyphCanvas.jso.width = 1900;
+		glyphCanvas.jso.height = 500;
+		ctx = glyphCanvas.jso.getContext($externalize("2d", $String));
 		col = 0;
 		row = 1;
 		_ref = "02345789ABCEGIJMNPRVXYZ:>+*~\xEF\xBD\xA1\xEF\xBD\xA4\xEF\xBD\xA5\xEF\xBD\xA6\xEF\xBD\xB0\xEF\xBD\xB1\xEF\xBD\xB2\xEF\xBD\xB3\xEF\xBD\xB4\xEF\xBD\xB5\xEF\xBD\xB6\xEF\xBD\xB7\xEF\xBD\xB8\xEF\xBD\xBA\xEF\xBD\xBB\xEF\xBD\xBC\xEF\xBD\xBE\xEF\xBD\xBF\xEF\xBE\x80\xEF\xBE\x81\xEF\xBE\x82\xEF\xBE\x84\xEF\xBE\x85\xEF\xBE\x86\xEF\xBE\x87\xEF\xBE\x88\xEF\xBE\x8B\xEF\xBE\x8C\xEF\xBE\x8D\xEF\xBE\x8E\xEF\xBE\x8F\xEF\xBE\x90\xEF\xBE\x91\xEF\xBE\x93\xEF\xBE\x94\xEF\xBE\x95\xEF\xBE\x96\xEF\xBE\x97\xEF\xBE\x98\xEF\xBE\x99\xEF\xBE\x9A\xEF\xBE\x9B\xEF\xBE\x9C\xEF\xBE\x9D";
@@ -2612,9 +2623,34 @@ $packages["main"] = (function() {
 		}
 		return glyphCanvas;
 	};
-	ptrType$1.methods = [{prop: "start", name: "start", pkg: "main", typ: $funcType([], [$error], false)}, {prop: "layout", name: "layout", pkg: "main", typ: $funcType([], [], false)}, {prop: "overLink", name: "overLink", pkg: "main", typ: $funcType([$Int, $Int], [$Bool], false)}, {prop: "dropWaterAtCol", name: "dropWaterAtCol", pkg: "main", typ: $funcType([$Int, $Float64, $Int, $Float64, Duration], [], false)}, {prop: "dropRandomWaterDrop", name: "dropRandomWaterDrop", pkg: "main", typ: $funcType([Duration], [], false)}, {prop: "maxRows", name: "maxRows", pkg: "main", typ: $funcType([], [$Int], false)}, {prop: "drawGlyphAt", name: "drawGlyphAt", pkg: "main", typ: $funcType([$Int, $Int, $Float64, $Float64, $Bool], [], false)}, {prop: "drawGlyphElAt", name: "drawGlyphElAt", pkg: "main", typ: $funcType([ptrType$2, $Int, $Int, $Float64, $Float64], [], false)}, {prop: "drawTitle", name: "drawTitle", pkg: "main", typ: $funcType([$String, $String, $Float64, $Float64], [$Float64], false)}, {prop: "drawTitles", name: "drawTitles", pkg: "main", typ: $funcType([], [], false)}, {prop: "loop", name: "loop", pkg: "main", typ: $funcType([Duration], [], false)}];
-	DigitalRain.init([{prop: "parent", name: "parent", pkg: "main", typ: ptrType$2, tag: ""}, {prop: "canvas", name: "canvas", pkg: "main", typ: ptrType$2, tag: ""}, {prop: "ctx", name: "ctx", pkg: "main", typ: ptrType$2, tag: ""}, {prop: "width", name: "width", pkg: "main", typ: $Float64, tag: ""}, {prop: "height", name: "height", pkg: "main", typ: $Float64, tag: ""}, {prop: "ratio", name: "ratio", pkg: "main", typ: $Float64, tag: ""}, {prop: "timestamp", name: "timestamp", pkg: "main", typ: Duration, tag: ""}, {prop: "highGlyphCanvas", name: "highGlyphCanvas", pkg: "main", typ: ptrType$2, tag: ""}, {prop: "lowGlyphCanvas", name: "lowGlyphCanvas", pkg: "main", typ: ptrType$2, tag: ""}, {prop: "drops", name: "drops", pkg: "main", typ: sliceType, tag: ""}, {prop: "linkover", name: "linkover", pkg: "main", typ: $Bool, tag: ""}, {prop: "screenCols", name: "screenCols", pkg: "main", typ: $Int, tag: ""}, {prop: "minSpeed", name: "minSpeed", pkg: "main", typ: $Int, tag: ""}, {prop: "maxSpeed", name: "maxSpeed", pkg: "main", typ: $Int, tag: ""}, {prop: "brightness", name: "brightness", pkg: "main", typ: $Float64, tag: ""}]);
+	GlyphCanvas.ptr.prototype.Glyph = function(gx, gy) {
+		var $ptr = {}, _entry, _entry$1, _key, _key$1, ctx, gc, gx, gy, mx, my;
+		gc = this;
+		if (gc.glyphs === false) {
+			gc.glyphs = new $Map();
+		}
+		mx = (_entry = gc.glyphs[gx], _entry !== undefined ? _entry.v : false);
+		if (mx === false) {
+			mx = new $Map();
+			_key = gx; (gc.glyphs || $throwRuntimeError("assignment to entry in nil map"))[_key] = { k: _key, v: mx };
+		}
+		my = (_entry$1 = mx[gy], _entry$1 !== undefined ? _entry$1.v : null);
+		if (my === null) {
+			my = $global.document.createElement($externalize("canvas", $String));
+			my.width = 100;
+			my.height = 100;
+			ctx = my.getContext($externalize("2d", $String));
+			ctx.drawImage(gc.jso, gx, gy, 100, 100, 0, 0, 100, 100);
+			_key$1 = gy; (mx || $throwRuntimeError("assignment to entry in nil map"))[_key$1] = { k: _key$1, v: my };
+		}
+		return my;
+	};
+	GlyphCanvas.prototype.Glyph = function(gx, gy) { return this.$val.Glyph(gx, gy); };
+	ptrType$2.methods = [{prop: "start", name: "start", pkg: "main", typ: $funcType([], [$error], false)}, {prop: "layout", name: "layout", pkg: "main", typ: $funcType([], [], false)}, {prop: "overLink", name: "overLink", pkg: "main", typ: $funcType([$Int, $Int], [$Bool], false)}, {prop: "dropWaterAtCol", name: "dropWaterAtCol", pkg: "main", typ: $funcType([$Int, $Float64, $Int, $Float64, Duration], [], false)}, {prop: "dropRandomWaterDrop", name: "dropRandomWaterDrop", pkg: "main", typ: $funcType([Duration], [], false)}, {prop: "maxRows", name: "maxRows", pkg: "main", typ: $funcType([], [$Int], false)}, {prop: "drawGlyphAt", name: "drawGlyphAt", pkg: "main", typ: $funcType([$Int, $Int, $Float64, $Float64, $Bool], [], false)}, {prop: "drawGlyphElAt", name: "drawGlyphElAt", pkg: "main", typ: $funcType([ptrType, $Int, $Int, $Float64, $Float64], [], false)}, {prop: "drawTitle", name: "drawTitle", pkg: "main", typ: $funcType([$String, $String, $Float64, $Float64], [$Float64], false)}, {prop: "drawTitles", name: "drawTitles", pkg: "main", typ: $funcType([], [], false)}, {prop: "loop", name: "loop", pkg: "main", typ: $funcType([Duration], [], false)}];
+	ptrType.methods = [{prop: "Glyph", name: "Glyph", pkg: "", typ: $funcType([$Int, $Int], [ptrType$3], false)}];
+	DigitalRain.init([{prop: "parent", name: "parent", pkg: "main", typ: ptrType$3, tag: ""}, {prop: "canvas", name: "canvas", pkg: "main", typ: ptrType$3, tag: ""}, {prop: "ctx", name: "ctx", pkg: "main", typ: ptrType$3, tag: ""}, {prop: "width", name: "width", pkg: "main", typ: $Float64, tag: ""}, {prop: "height", name: "height", pkg: "main", typ: $Float64, tag: ""}, {prop: "ratio", name: "ratio", pkg: "main", typ: $Float64, tag: ""}, {prop: "timestamp", name: "timestamp", pkg: "main", typ: Duration, tag: ""}, {prop: "highGlyphCanvas", name: "highGlyphCanvas", pkg: "main", typ: ptrType, tag: ""}, {prop: "lowGlyphCanvas", name: "lowGlyphCanvas", pkg: "main", typ: ptrType, tag: ""}, {prop: "drops", name: "drops", pkg: "main", typ: sliceType, tag: ""}, {prop: "linkover", name: "linkover", pkg: "main", typ: $Bool, tag: ""}, {prop: "screenCols", name: "screenCols", pkg: "main", typ: $Int, tag: ""}, {prop: "minSpeed", name: "minSpeed", pkg: "main", typ: $Int, tag: ""}, {prop: "maxSpeed", name: "maxSpeed", pkg: "main", typ: $Int, tag: ""}, {prop: "brightness", name: "brightness", pkg: "main", typ: $Float64, tag: ""}]);
 	waterDrop.init([{prop: "col", name: "col", pkg: "main", typ: $Int, tag: ""}, {prop: "row", name: "row", pkg: "main", typ: $Float64, tag: ""}, {prop: "start", name: "start", pkg: "main", typ: $Float64, tag: ""}, {prop: "speed", name: "speed", pkg: "main", typ: $Float64, tag: ""}, {prop: "glyphs", name: "glyphs", pkg: "main", typ: sliceType$2, tag: ""}, {prop: "spedup", name: "spedup", pkg: "main", typ: $Bool, tag: ""}, {prop: "created", name: "created", pkg: "main", typ: Duration, tag: ""}]);
+	GlyphCanvas.init([{prop: "jso", name: "jso", pkg: "main", typ: ptrType$3, tag: ""}, {prop: "glyphs", name: "glyphs", pkg: "main", typ: mapType$1, tag: ""}]);
 	$pkg.$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $r, $s = 0; var $init_main = function() { while (true) { switch ($s) { case 0:
