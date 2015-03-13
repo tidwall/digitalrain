@@ -313,7 +313,7 @@ func (r *DigitalRain) loop(timestamp Duration) {
 }
 
 const (
-	glyphs        = "02345789ABCEGIJMNPRVXYZ:>+*~｡､･ｦｰｱｲｳｴｵｶｷｸｺｻｼｾｿﾀﾁﾂﾄﾅﾆﾇﾈﾋﾌﾍﾎﾏﾐﾑﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ"
+	glyphs        = "02345789ABCEGIJMNPRVXYZ:>+*~｡､イエカクコシセタツトニハフホミメヤラハヒルغضخترصعنليحودبㅏㅓㅗㅜㅡㅣŁ"
 	glyphsCols    = 18
 	glyphsCount   = 72
 	glyphCellSize = 100
@@ -344,7 +344,7 @@ func NewGlyphCanvas(color string) *GlyphCanvas {
 		ctx.Set("textAlign", "center")
 		ctx.Set("font", itoa(int(fontSize))+"px Monaco, Helvetica, Arial, Sans-Serif")
 		ctx.Set("shadowColor", color)
-		ctx.Set("shadowBlur", float64(fontSize)*.60)
+		ctx.Set("shadowBlur", float64(fontSize)*.50)
 		switch c {
 		default:
 			ctx.Call("translate", cellSize*float64(col)+cellSize/2, cellSize*float64(row)+(fontSize-cellSize))
@@ -355,7 +355,6 @@ func NewGlyphCanvas(color string) *GlyphCanvas {
 		for i := 0; i < 3; i++ {
 			ctx.Set("fillStyle", color)
 			ctx.Call("fillText", string(c), 0, 0)
-
 		}
 		ctx.Call("restore")
 		col++
