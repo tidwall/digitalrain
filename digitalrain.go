@@ -313,7 +313,7 @@ func (r *DigitalRain) loop(timestamp Duration) {
 }
 
 const (
-	glyphs        = "02345789ABCEGIJMNPRVXYZ:>+*~｡､イエカクコシセタツトニハフホミメヤラハヒルغضخترصعنليحودبㅏㅓㅗㅜㅡㅣŁ"
+	glyphs        = "02345789ABCEGIJMNPRVXYZ:>+*~｡､イエカクコシセタツトニハフホミメヤラハヒルرعلحودסצשאיดฟวㅏㅓㅗㅜ-ㅣŁ"
 	glyphsCols    = 18
 	glyphsCount   = 72
 	glyphCellSize = 100
