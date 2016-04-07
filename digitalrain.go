@@ -4,23 +4,40 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 )
 
-const (
-	showBlueHeads = true
-	overlap       = 0 // 0-N, allowable drop overlaps for a column
-	highColor     = "#7bB5C8"
-	lowColor      = "#3b806d"
-	githubLink    = "http://github.com/tidwall/digitalrain"
-	level1Cols    = 40
-	level2Cols    = 60
+var (
+	showBlueHeads       = true
+	overlap             = 0                                    // 0-N, allowable drop overlaps for a column
+	lowColor            = "#6ba5b8"                            //"#3b806d"
+	highColor           = "#5b95a8"                            //"#7bB5C8"
+	background          = "linear-gradient(#ccddee, #ffffff);" //"#000000"
+	githubLinkColor     = "rgba(107,165,184,.5)"               //"rgba(59,128,109,.5)"
+	githubLinkOverColor = "rgba(107,165,184,1)"                //"rgba(59,128,109,1)"
+	githubLink          = "http://github.com/tidwall/digitalrain"
+	level1Cols          = 40
+	level2Cols          = 60
 )
+
+var lowGlyphCanvases []*GlyphCanvas
+var highGlyphCanvases []*GlyphCanvas
+var backgrounds []string
+var index int
 
 func main() {
 	sheet := js.Global.Get("document").Call("createElement", "style")
 	sheet.Set("innerHTML",
-		"html, body { background: black; padding:0; margin:0; border:0; width:100%; height:100%; overflow:hidden;}")
+		`html, body { 
+			padding:0; margin:0; border:0; width:100%; height:100%; overflow:hidden;
+		}
+		html{
+			background-color: transparent;
+			background: `+background+`
+		}`)
 	js.Global.Get("document").Get("head").Call("appendChild", sheet)
 	js.Global.Get("document").Set("title", "whoa")
 	js.Global.Call("addEventListener", "load", func() {
+		lowGlyphCanvases = []*GlyphCanvas{NewGlyphCanvas("#6ba5b8"), NewGlyphCanvas("#3b806d")}
+		highGlyphCanvases = []*GlyphCanvas{NewGlyphCanvas("#5b95a8"), NewGlyphCanvas("#7bB5C8")}
+		backgrounds = []string{"linear-gradient(#ccddee, #ffffff);", "#000000"}
 		rain1, err := NewDigitalRain(js.Global.Get("document").Get("body"), level2Cols, 2, 8, 0.25)
 		if err != nil {
 			println(err.Error())
@@ -29,7 +46,6 @@ func main() {
 		js.Global.Call("addEventListener", "resize", func() {
 			rain1.layout()
 		})
-
 		rain2, err := NewDigitalRain(js.Global.Get("document").Get("body"), level1Cols, 2, 12, 1.0)
 		if err != nil {
 			println(err.Error())
@@ -38,6 +54,15 @@ func main() {
 		js.Global.Call("addEventListener", "resize", func() {
 			rain2.layout()
 		})
+		rain2.Clicked = func() {
+			index++
+			rain1.lowGlyphCanvas = lowGlyphCanvases[index%2]
+			rain1.highGlyphCanvas = highGlyphCanvases[index%2]
+			rain2.lowGlyphCanvas = lowGlyphCanvases[index%2]
+			rain2.highGlyphCanvas = highGlyphCanvases[index%2]
+			js.Global.Get("document").Get("body").Get("style").Set("background-color", "transparent")
+			js.Global.Get("document").Get("body").Get("style").Set("background", backgrounds[index%2])
+		}
 	})
 }
 
@@ -61,14 +86,15 @@ type DigitalRain struct {
 	width, height   float64
 	ratio           float64
 	timestamp       Duration
-	highGlyphCanvas *GlyphCanvas
 	lowGlyphCanvas  *GlyphCanvas
+	highGlyphCanvas *GlyphCanvas
 	drops           []*waterDrop
 	linkover        bool
 	screenCols      int
 	minSpeed        int
 	maxSpeed        int
 	brightness      float64
+	Clicked         func()
 }
 
 func NewDigitalRain(parent *js.Object, screenCols int, minSpeed int, maxSpeed int, brightness float64) (*DigitalRain, error) {
@@ -94,14 +120,10 @@ func (r *DigitalRain) start() error {
 		panic("requestAnimationFrame is not available")
 	}
 	defer r.layout()
-	count := 0
 	var f func(*js.Object)
 	f = func(timestampJS *js.Object) {
 		js.Global.Call(raf, f)
-		if count%2 == 0 {
-			r.loop(Duration(timestampJS.Float() / 1000))
-		}
-		count++
+		r.loop(Duration(timestampJS.Float() / 1000))
 	}
 	js.Global.Call(raf, f)
 	return nil
@@ -127,15 +149,20 @@ func (r *DigitalRain) layout() {
 	r.canvas.Get("style").Set("position", "absolute")
 	r.parent.Call("appendChild", r.canvas)
 	if r.highGlyphCanvas == nil {
-		r.highGlyphCanvas = NewGlyphCanvas(highColor)
+		r.highGlyphCanvas = highGlyphCanvases[index%2]
 	}
 	if r.lowGlyphCanvas == nil {
-		r.lowGlyphCanvas = NewGlyphCanvas(lowColor)
+		r.lowGlyphCanvas = lowGlyphCanvases[index%2]
 	}
 
 	r.canvas.Call("addEventListener", "click", func(ev *js.Object) {
 		if r.overLink(ev.Get("x").Int(), ev.Get("y").Int()) {
 			js.Global.Set("location", githubLink)
+
+		} else {
+			if r.Clicked != nil {
+				r.Clicked()
+			}
 		}
 	})
 
@@ -231,6 +258,16 @@ func (r *DigitalRain) drawGlyphElAt(glyphCanvas *GlyphCanvas, nidx int, col int,
 	}
 }
 
+func shortLink(link string) string {
+	for i := 0; i < len(link); i++ {
+		if link[i] == ':' && i+2 < len(link) && link[i+1] == '/' && link[i+2] == '/' {
+
+			return link[i+3:]
+		}
+	}
+	return link
+}
+
 func (r *DigitalRain) drawTitle(text string, color string, fontSize float64, y float64) float64 {
 	ny := y + (fontSize * 1.5)
 	pad := 15 * r.ratio
@@ -249,12 +286,11 @@ func (r *DigitalRain) drawTitle(text string, color string, fontSize float64, y f
 }
 
 func (r *DigitalRain) drawTitles() {
-	color := "59,128,109"
 	y := float64(0)
 	if r.linkover {
-		y = r.drawTitle("github.com/tidwall/digitalrain", "rgba("+color+",1)", 15*r.ratio, y)
+		y = r.drawTitle(shortLink(githubLink), githubLinkOverColor, 15*r.ratio, y)
 	} else {
-		y = r.drawTitle("github.com/tidwall/digitalrain", "rgba("+color+",.5)", 15*r.ratio, y)
+		y = r.drawTitle(shortLink(githubLink), githubLinkColor, 15*r.ratio, y)
 	}
 }
 
@@ -339,7 +375,6 @@ func NewGlyphCanvas(color string) *GlyphCanvas {
 		if i <= 36 {
 			fontSize *= .87
 		}
-		cellSize = cellSize
 		ctx.Call("save")
 		ctx.Set("textAlign", "center")
 		ctx.Set("font", itoa(int(fontSize))+"px Monaco, Helvetica, Arial, Sans-Serif")
