@@ -20,7 +20,7 @@ var (
 var lowGlyphCanvases []*GlyphCanvas
 var highGlyphCanvases []*GlyphCanvas
 var backgrounds []string
-var index int
+var index int = 1
 
 func main() {
 	sheet := js.Global.Get("document").Call("createElement", "style")
@@ -29,15 +29,14 @@ func main() {
 			padding:0; margin:0; border:0; width:100%; height:100%; overflow:hidden;
 		}
 		html{
-			background-color: transparent;
-			background: `+background+`
+			background: black;
 		}`)
 	js.Global.Get("document").Get("head").Call("appendChild", sheet)
 	js.Global.Get("document").Set("title", "whoa")
 	js.Global.Call("addEventListener", "load", func() {
 		lowGlyphCanvases = []*GlyphCanvas{NewGlyphCanvas("#6ba5b8"), NewGlyphCanvas("#3b806d")}
 		highGlyphCanvases = []*GlyphCanvas{NewGlyphCanvas("#5b95a8"), NewGlyphCanvas("#7bB5C8")}
-		backgrounds = []string{"linear-gradient(#ccddee, #ffffff);", "#000000"}
+		backgrounds = []string{"#dcedfe", "#000000"}
 		rain1, err := NewDigitalRain(js.Global.Get("document").Get("body"), level2Cols, 2, 8, 0.25)
 		if err != nil {
 			println(err.Error())
@@ -60,7 +59,7 @@ func main() {
 			rain1.highGlyphCanvas = highGlyphCanvases[index%2]
 			rain2.lowGlyphCanvas = lowGlyphCanvases[index%2]
 			rain2.highGlyphCanvas = highGlyphCanvases[index%2]
-			js.Global.Get("document").Get("body").Get("style").Set("background-color", "transparent")
+
 			js.Global.Get("document").Get("body").Get("style").Set("background", backgrounds[index%2])
 		}
 	})

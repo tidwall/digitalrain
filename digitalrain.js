@@ -2315,7 +2315,7 @@ $packages["runtime"] = (function() {
 	return $pkg;
 })();
 $packages["main"] = (function() {
-	var $pkg = {}, $init, js, Duration, DigitalRain, waterDrop, GlyphCanvas, ptrType, sliceType, sliceType$1, funcType, ptrType$1, sliceType$2, ptrType$2, ptrType$3, funcType$1, sliceType$3, mapType, mapType$1, overlap, background, githubLinkColor, githubLinkOverColor, githubLink, level1Cols, level2Cols, lowGlyphCanvases, highGlyphCanvases, backgrounds, index, main, itoa, ftoa, randi, NewDigitalRain, shortLink, NewGlyphCanvas;
+	var $pkg = {}, $init, js, Duration, DigitalRain, waterDrop, GlyphCanvas, ptrType, sliceType, sliceType$1, funcType, ptrType$1, sliceType$2, ptrType$2, ptrType$3, funcType$1, sliceType$3, mapType, mapType$1, overlap, githubLinkColor, githubLinkOverColor, githubLink, level1Cols, level2Cols, lowGlyphCanvases, highGlyphCanvases, backgrounds, index, main, itoa, ftoa, randi, NewDigitalRain, shortLink, NewGlyphCanvas;
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	Duration = $pkg.Duration = $newType(8, $kindFloat64, "main.Duration", "Duration", "main", null);
 	DigitalRain = $pkg.DigitalRain = $newType(0, $kindStruct, "main.DigitalRain", "DigitalRain", "main", function(parent_, canvas_, ctx_, width_, height_, ratio_, timestamp_, lowGlyphCanvas_, highGlyphCanvas_, drops_, linkover_, screenCols_, minSpeed_, maxSpeed_, brightness_, Clicked_) {
@@ -2401,7 +2401,7 @@ $packages["main"] = (function() {
 	main = function() {
 		var $ptr, sheet;
 		sheet = $global.document.createElement($externalize("style", $String));
-		sheet.innerHTML = $externalize("html, body { \n\t\t\tpadding:0; margin:0; border:0; width:100%; height:100%; overflow:hidden;\n\t\t}\n\t\thtml{\n\t\t\tbackground-color: transparent;\n\t\t\tbackground: " + background + "\n\t\t}", $String);
+		sheet.innerHTML = $externalize("html, body { \n\t\t\tpadding:0; margin:0; border:0; width:100%; height:100%; overflow:hidden;\n\t\t}\n\t\thtml{\n\t\t\tbackground: black;\n\t\t}", $String);
 		$global.document.head.appendChild(sheet);
 		$global.document.title = $externalize("whoa", $String);
 		$global.addEventListener($externalize("load", $String), $externalize((function $b() {
@@ -2411,7 +2411,7 @@ $packages["main"] = (function() {
 			rain2 = [rain2];
 			lowGlyphCanvases = new sliceType([NewGlyphCanvas("#6ba5b8"), NewGlyphCanvas("#3b806d")]);
 			highGlyphCanvases = new sliceType([NewGlyphCanvas("#5b95a8"), NewGlyphCanvas("#7bB5C8")]);
-			backgrounds = new sliceType$1(["linear-gradient(#ccddee, #ffffff);", "#000000"]);
+			backgrounds = new sliceType$1(["#dcedfe", "#000000"]);
 			_tuple = NewDigitalRain($global.document.body, level2Cols, 2, 8, 0.25);
 			rain1[0] = _tuple[0];
 			err = _tuple[1];
@@ -2447,7 +2447,6 @@ $packages["main"] = (function() {
 				rain1[0].highGlyphCanvas = (x$1 = (_r$3 = index % 2, _r$3 === _r$3 ? _r$3 : $throwRuntimeError("integer divide by zero")), ((x$1 < 0 || x$1 >= highGlyphCanvases.$length) ? $throwRuntimeError("index out of range") : highGlyphCanvases.$array[highGlyphCanvases.$offset + x$1]));
 				rain2[0].lowGlyphCanvas = (x$2 = (_r$4 = index % 2, _r$4 === _r$4 ? _r$4 : $throwRuntimeError("integer divide by zero")), ((x$2 < 0 || x$2 >= lowGlyphCanvases.$length) ? $throwRuntimeError("index out of range") : lowGlyphCanvases.$array[lowGlyphCanvases.$offset + x$2]));
 				rain2[0].highGlyphCanvas = (x$3 = (_r$5 = index % 2, _r$5 === _r$5 ? _r$5 : $throwRuntimeError("integer divide by zero")), ((x$3 < 0 || x$3 >= highGlyphCanvases.$length) ? $throwRuntimeError("index out of range") : highGlyphCanvases.$array[highGlyphCanvases.$offset + x$3]));
-				$global.document.body.style[$externalize("background-color", $String)] = $externalize("transparent", $String);
 				$global.document.body.style.background = $externalize((x$4 = (_r$6 = index % 2, _r$6 === _r$6 ? _r$6 : $throwRuntimeError("integer divide by zero")), ((x$4 < 0 || x$4 >= backgrounds.$length) ? $throwRuntimeError("index out of range") : backgrounds.$array[backgrounds.$offset + x$4])), $String);
 			}; })(rain1, rain2);
 			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.err = err; $f.rain1 = rain1; $f.rain2 = rain2; $f.$s = $s; $f.$r = $r; return $f;
@@ -2852,14 +2851,13 @@ $packages["main"] = (function() {
 		lowGlyphCanvases = sliceType.nil;
 		highGlyphCanvases = sliceType.nil;
 		backgrounds = sliceType$1.nil;
-		index = 0;
 		overlap = 0;
-		background = "linear-gradient(#ccddee, #ffffff);";
 		githubLinkColor = "rgba(107,165,184,.5)";
 		githubLinkOverColor = "rgba(107,165,184,1)";
 		githubLink = "http://github.com/tidwall/digitalrain";
 		level1Cols = 40;
 		level2Cols = 60;
+		index = 1;
 		if ($pkg === $mainPkg) {
 			main();
 			$mainFinished = true;
