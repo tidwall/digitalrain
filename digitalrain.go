@@ -42,8 +42,16 @@ func main() {
 			println(err.Error())
 			return
 		}
+		cover := js.Global.Get("document").Call("createElement", "div")
+		cover.Get("style").Set("height", "100%")
+		cover.Get("style").Set("width", "100%")
+		cover.Get("style").Set("background-image", "radial-gradient(ellipse farthest-corner at 45px 45px , #00FFFF 0%, rgba(0, 0, 255, 0) 50%, #0000FF 95%)")
+		cover.Get("style").Set("opacity", "0.15")
+		cover.Get("style").Set("position", "absolute")
+
 		js.Global.Call("addEventListener", "resize", func() {
 			rain1.layout()
+
 		})
 		rain2, err := NewDigitalRain(js.Global.Get("document").Get("body"), level1Cols, 2, 12, 1.0)
 		if err != nil {
@@ -54,6 +62,7 @@ func main() {
 			rain2.layout()
 		})
 		rain2.Clicked = func() {
+			return
 			index++
 			rain1.lowGlyphCanvas = lowGlyphCanvases[index%2]
 			rain1.highGlyphCanvas = highGlyphCanvases[index%2]
@@ -62,6 +71,7 @@ func main() {
 
 			js.Global.Get("document").Get("body").Get("style").Set("background", backgrounds[index%2])
 		}
+		js.Global.Get("document").Get("body").Call("appendChild", cover)
 	})
 }
 
@@ -378,7 +388,7 @@ func NewGlyphCanvas(color string) *GlyphCanvas {
 		ctx.Set("textAlign", "center")
 		ctx.Set("font", itoa(int(fontSize))+"px Monaco, Helvetica, Arial, Sans-Serif")
 		ctx.Set("shadowColor", color)
-		ctx.Set("shadowBlur", float64(fontSize)*.50)
+		ctx.Set("shadowBlur", float64(fontSize)*.35)
 		switch c {
 		default:
 			ctx.Call("translate", cellSize*float64(col)+cellSize/2, cellSize*float64(row)+(fontSize-cellSize))
