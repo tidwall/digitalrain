@@ -7,8 +7,6 @@ import (
 var (
 	showBlueHeads       = true
 	overlap             = 0                                    // 0-N, allowable drop overlaps for a column
-	lowColor            = "#6ba5b8"                            //"#3b806d"
-	highColor           = "#5b95a8"                            //"#7bB5C8"
 	background          = "linear-gradient(#ccddee, #ffffff);" //"#000000"
 	githubLinkColor     = "rgba(107,165,184,.5)"               //"rgba(59,128,109,.5)"
 	githubLinkOverColor = "rgba(107,165,184,1)"                //"rgba(59,128,109,1)"
@@ -35,7 +33,7 @@ func main() {
 	js.Global.Get("document").Set("title", "whoa")
 	js.Global.Call("addEventListener", "load", func() {
 		lowGlyphCanvases = []*GlyphCanvas{NewGlyphCanvas("#6ba5b8"), NewGlyphCanvas("#3b806d")}
-		highGlyphCanvases = []*GlyphCanvas{NewGlyphCanvas("#5b95a8"), NewGlyphCanvas("#7bB5C8")}
+		highGlyphCanvases = []*GlyphCanvas{NewGlyphCanvas("#5b95a8"), NewGlyphCanvas("#5b9b9b")}
 		backgrounds = []string{"#dcedfe", "#000000"}
 		rain1, err := NewDigitalRain(js.Global.Get("document").Get("body"), level2Cols, 2, 8, 0.25)
 		if err != nil {
