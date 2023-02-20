@@ -13,8 +13,8 @@ Install [Go](http://golang.org/) and [GopherJS](http://github.com/gopherjs/gophe
 
 ```bash
 # Prepare GOPATH
-export PATH=$PATH:$(go env GOPATH)/bin
 export GOPATH=$(go env GOPATH)
+export PATH=$PATH:$(go env GOPATH)/bin
 
 # Install gopherjs
 go install github.com/gopherjs/gopherjs@v1.18.0-beta2
