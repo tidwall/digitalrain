@@ -32,4 +32,4 @@ gopherjs serve
 License
 -------
 
-Digital Rain is available under the [MIT License](http://github.com/tidwall/digitalrain/LICENSE).
+Digital Rain is available under the [MIT License](LICENSE).
